@@ -3,8 +3,6 @@ import curses
 import time
 
 
-#Fuction definitions
-
 def coordinates_to_index(x: int, y: int) -> int:
     return (x + (WIDTH+1)*y)
 
@@ -12,7 +10,7 @@ def update_player_and_arena(arena: list, player_pos: list, apple_pos:list, direc
     if direction in ["z", "q", "s", "d"]:        # Update snake body
         arena[coordinates_to_index(player_pos[-1][0], player_pos[-1][1])] = "🟫"
 
-        # Add body part if apple eaten snake head
+        # Add body part if apple eaten 
         if player_pos[0] == apple_pos:
             player_pos.append(player_pos[-1].copy())
             apple_pos = [randint(0, WIDTH-1), randint(0, HEIGHT-1)]
@@ -45,7 +43,6 @@ def update_player_and_arena(arena: list, player_pos: list, apple_pos:list, direc
 def game(stdscr, arena, player_pos, apple_pos):
     stdscr.nodelay(True)  # don't wait for input
     direction = "d"
-
     while True:
         key = stdscr.getch()
         if key == ord("z"):
@@ -66,9 +63,6 @@ def game(stdscr, arena, player_pos, apple_pos):
         time.sleep(0.1)
 
 
-
-
-
 # Initial arena setup
 arena = []
 WIDTH = 15
@@ -87,8 +81,8 @@ apple_pos = [randint(5, WIDTH-1), randint(5, HEIGHT-1)]
 arena[coordinates_to_index(player_pos[0][0], player_pos[0][1])] = "🟥"
 arena[coordinates_to_index(apple_pos[0], apple_pos[1])] = "🍏"
 
-# Playble charcter setup in the middle
 print("".join(arena))
 
+# Game
 curses.wrapper(game, arena, player_pos, apple_pos)
 print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n###################################################\n###################################################\n###################################################\n###################################################\n######### # # # # YOU LOSE LOSER! # # # # #########\n###################################################\n###################################################\n###################################################\n###################################################\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")

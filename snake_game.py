@@ -6,6 +6,32 @@ import time
 def coordinates_to_index(x: int, y: int) -> int:
     return (x + (WIDTH+1)*y)
 
+def update_apple_pos(body_pos: list) -> list:
+    while True:
+        apple_pos = [randint(0, WIDTH-1), randint(0, HEIGHT-1)]
+        if apple_pos not in body_pos:
+            return apple_pos
+
+def update_head(direction: str, player_pos: list) -> list:
+    old_player_head = player_pos[0].copy()
+    if direction == "z":
+        player_pos[0][1] -= 1
+    elif direction == "q":
+        player_pos[0][0] -= 1
+    elif direction == "s":
+        player_pos[0][1] += 1
+    elif direction == "d":
+        player_pos[0][0] += 1
+    if len(player_pos) > 1:
+        if player_pos[0] == player_pos[1]:
+            player_pos[0] = [old_player_head[0] + (old_player_head[0] - player_pos[1][0]), old_player_head[1] + (old_player_head[1] - player_pos[1][1])]
+
+    return player_pos
+
+    # print(str(player_pos) + " : updated head")
+    
+
+
 def update_player_and_arena(arena: list, player_pos: list, apple_pos:list, direction: str):
     if direction in ["z", "q", "s", "d"]:        # Update snake body
         arena[coordinates_to_index(player_pos[-1][0], player_pos[-1][1])] = "🟫"
@@ -13,28 +39,21 @@ def update_player_and_arena(arena: list, player_pos: list, apple_pos:list, direc
         # Add body part if apple eaten 
         if player_pos[0] == apple_pos:
             player_pos.append(player_pos[-1].copy())
-            apple_pos = [randint(0, WIDTH-1), randint(0, HEIGHT-1)]
+            apple_pos = update_apple_pos(player_pos)
             arena[coordinates_to_index(apple_pos[0], apple_pos[1])] = "🍏"
-        # print(str(player_pos) + " : added a body part")
 
 
-        # Update old body parts
-        print(str(player_pos) + " : old body")
-        for i in range(len(player_pos) - 1, 0, -1):
-            player_pos[i] = player_pos[i-1].copy()
-        print(str(player_pos) + " : updated body")
+        # Store old head pos
+        old_head_pos = player_pos[0].copy()
 
-        # Update head
-        if direction == "z":
-            player_pos[0][1] -= 1
-        elif direction == "q":
-            player_pos[0][0] -= 1
-        elif direction == "s":
-            player_pos[0][1] += 1
-        elif direction == "d":
-            player_pos[0][0] += 1
-        print(str(player_pos) + " : updated head")
-
+        # UPDATE SNAKE BODY
+        # 1 Update head
+        update_head(direction, player_pos)
+        # 2 Update old body
+        for i in range(len(player_pos) - 1, 1, -1):
+                    player_pos[i] = player_pos[i-1].copy()
+        if len(player_pos) > 1: player_pos[1] = old_head_pos 
+        # 3 Draw body
         for i in range(0, len(player_pos)):
             arena[coordinates_to_index(player_pos[i][0], player_pos[i][1])] = "🟥"
 
@@ -75,7 +94,7 @@ for i in range(HEIGHT):
 
 # Initial player and apple position setup
 player_pos = [[0, 0]]
-apple_pos = [randint(5, WIDTH-1), randint(5, HEIGHT-1)]
+apple_pos = [randint(1, WIDTH-1), randint(1, HEIGHT-1)]
 
 
 arena[coordinates_to_index(player_pos[0][0], player_pos[0][1])] = "🟥"
@@ -85,4 +104,4 @@ print("".join(arena))
 
 # Game
 curses.wrapper(game, arena, player_pos, apple_pos)
-print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n###################################################\n###################################################\n###################################################\n###################################################\n######### # # # # YOU LOSE LOSER! # # # # #########\n###################################################\n###################################################\n###################################################\n###################################################\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n###################################################\n###################################################\n###################################################\n###################################################\n######### # # # # YOU LOSE LOSER! # # # # #########\n###################################################\n###################################################\n###################################################\n###################################################\n\n\n\n\n\n\n\n\n\n\n")
